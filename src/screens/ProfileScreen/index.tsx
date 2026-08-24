@@ -3,10 +3,13 @@ import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuthStore } from '@/stores/useAuthStore';
 import ThemedText from '@/components/ui/ThemedText';
 import AvatarImage from '@/components/ui/AvatarImage';
+import { RootStackParamList } from '@/navigation/AppNavigator';
 import { spacing, borderRadius } from '@/design-system/spacing';
 
 const AVATAR_SIZE = 100;
@@ -32,14 +35,11 @@ function StatItem({ value, label, icon }: { value: string; label: string; icon: 
 
 export default function ProfileScreen() {
   const theme = useTheme();
-  const { user, isAuthenticated, login, logout } = useAuthStore();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const handleLogin = () => {
-    login({
-      id: 1,
-      name: '张三',
-      email: 'zhangsan@example.com',
-    });
+    navigation.navigate('Login');
   };
 
   const avatarUrl = isAuthenticated
@@ -117,13 +117,13 @@ export default function ProfileScreen() {
             {isAuthenticated && user ? user.email : '请先登录以使用完整功能'}
           </ThemedText>
 
-          {/* 统计行 */}
+          {/* 订单统计行 */}
           <View style={[styles.statsRow, { borderTopColor: theme.colors.outline }]}>
-            <StatItem value={isAuthenticated ? '12' : '-'} label="文章" icon="file-document-outline" />
+            <StatItem value={isAuthenticated ? '2' : '-'} label="待付款" icon="credit-card-clock" />
             <View style={[styles.statDivider, { backgroundColor: theme.colors.outline }]} />
-            <StatItem value={isAuthenticated ? '48' : '-'} label="点赞" icon="heart-outline" />
+            <StatItem value={isAuthenticated ? '1' : '-'} label="待发货" icon="truck-fast" />
             <View style={[styles.statDivider, { backgroundColor: theme.colors.outline }]} />
-            <StatItem value={isAuthenticated ? '6' : '-'} label="收藏" icon="bookmark-outline" />
+            <StatItem value={isAuthenticated ? '3' : '-'} label="待收货" icon="package-variant" />
           </View>
 
           {/* 操作按钮 */}
@@ -153,6 +153,20 @@ export default function ProfileScreen() {
             </ThemedText>
           </Pressable>
         </View>
+
+        {/* 设置入口 */}
+        <Pressable
+          onPress={() => navigation.navigate('Settings' as never)}
+          style={[styles.settingsCard, { backgroundColor: theme.colors.surface }]}
+        >
+          <View style={styles.settingsLeft}>
+            <MaterialCommunityIcons name="cog-outline" size={22} color={theme.colors.onSurface} />
+            <ThemedText variant="body" weight="500">
+              设置
+            </ThemedText>
+          </View>
+          <MaterialCommunityIcons name="chevron-right" size={20} color={theme.colors.onSurfaceVariant} />
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -164,6 +178,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: spacing['3xl'],
+    gap: spacing.md,
   },
   headerBackground: {
     position: 'relative',
@@ -234,5 +249,18 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     marginRight: spacing.xs,
+  },
+  settingsCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: spacing.lg,
+    padding: spacing.lg,
+    borderRadius: borderRadius['2xl'],
+  },
+  settingsLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
   },
 });

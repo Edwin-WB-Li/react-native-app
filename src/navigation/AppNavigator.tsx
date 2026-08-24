@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,19 +12,32 @@ import Animated, {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import HomeScreen from '@/screens/HomeScreen';
-import PostDetailScreen from '@/screens/PostDetailScreen';
+import CategoryScreen from '@/screens/CategoryScreen';
+import CartScreen from '@/screens/CartScreen';
 import ProfileScreen from '@/screens/ProfileScreen';
+import PostDetailScreen from '@/screens/PostDetailScreen';
+import ProductDetailScreen from '@/screens/ProductDetailScreen';
+import SearchScreen from '@/screens/SearchScreen';
+import LoginScreen from '@/screens/LoginScreen';
+import RegisterScreen from '@/screens/RegisterScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
+import { useCartStore } from '@/stores/useCartStore';
 
 export type RootStackParamList = {
   MainTabs: undefined;
   PostDetail: { postId: number };
+  ProductDetail: { productId: number };
+  Search: undefined;
+  Login: undefined;
+  Register: undefined;
+  Settings: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
+  Category: { categoryId?: number } | undefined;
+  Cart: undefined;
   Profile: undefined;
-  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -34,8 +47,9 @@ type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
 const TAB_ICONS: Record<string, { active: IconName; inactive: IconName }> = {
   Home: { active: 'home', inactive: 'home-outline' },
+  Category: { active: 'view-grid', inactive: 'view-grid-outline' },
+  Cart: { active: 'cart', inactive: 'cart-outline' },
   Profile: { active: 'account', inactive: 'account-outline' },
-  Settings: { active: 'cog', inactive: 'cog-outline' },
 };
 
 function AnimatedTabIcon({
@@ -91,6 +105,57 @@ function TabBarIconWrapper({
   );
 }
 
+function CartTabIcon({
+  routeName,
+  focused,
+  color,
+}: {
+  routeName: string;
+  focused: boolean;
+  color: string;
+}) {
+  const totalCount = useCartStore(state => state.getTotalCount());
+
+  return (
+    <View style={{ alignItems: 'center', justifyContent: 'center', height: 28 }}>
+      <AnimatedTabIcon routeName={routeName} focused={focused} color={color} />
+      {totalCount > 0 && (
+        <View
+          style={{
+            position: 'absolute',
+            top: -4,
+            right: -8,
+            backgroundColor: '#EF4444',
+            borderRadius: 10,
+            minWidth: 16,
+            height: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingHorizontal: 4,
+          }}
+        >
+          <React.Fragment>
+            {totalCount > 99 ? (
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#fff' }} />
+            ) : (
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 10,
+                  fontWeight: '700',
+                  lineHeight: 14,
+                }}
+              >
+                {totalCount}
+              </Text>
+            )}
+          </React.Fragment>
+        </View>
+      )}
+    </View>
+  );
+}
+
 function MainTabNavigator() {
   const theme = useTheme();
 
@@ -116,9 +181,12 @@ function MainTabNavigator() {
           fontWeight: '500',
         },
         headerShown: false,
-        tabBarIcon: ({ focused, color }) => (
-          <TabBarIconWrapper routeName={route.name} focused={focused} color={color} />
-        ),
+        tabBarIcon: ({ focused, color }) => {
+          if (route.name === 'Cart') {
+            return <CartTabIcon routeName={route.name} focused={focused} color={color} />;
+          }
+          return <TabBarIconWrapper routeName={route.name} focused={focused} color={color} />;
+        },
       })}
     >
       <Tab.Screen
@@ -127,14 +195,19 @@ function MainTabNavigator() {
         options={{ title: '首页' }}
       />
       <Tab.Screen
+        name="Category"
+        component={CategoryScreen}
+        options={{ title: '分类' }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{ title: '购物车' }}
+      />
+      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{ title: '我的' }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: '设置' }}
       />
     </Tab.Navigator>
   );
@@ -166,6 +239,31 @@ export default function AppNavigator() {
           name="PostDetail"
           component={PostDetailScreen}
           options={{ title: '文章详情' }}
+        />
+        <Stack.Screen
+          name="ProductDetail"
+          component={ProductDetailScreen}
+          options={{ title: '商品详情' }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchScreen}
+          options={{ title: '搜索', headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: '登录', headerShown: false }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ title: '注册', headerShown: false }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{ title: '设置' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

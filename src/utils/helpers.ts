@@ -16,3 +16,15 @@ export const truncateString = (str: string, maxLength: number): string => {
   if (str.length <= maxLength) return str;
   return str.slice(0, maxLength) + '...';
 };
+
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+export const validatePassword = (password: string): { valid: boolean; message?: string } => {
+  if (password.length < 6) {
+    return { valid: false, message: '密码长度至少为 6 位' };
+  }
+  return { valid: true };
+};

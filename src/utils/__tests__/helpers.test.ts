@@ -1,4 +1,4 @@
-import { sleep, formatDate, truncateString } from '../helpers';
+import { sleep, formatDate, truncateString, isValidEmail, validatePassword } from '../helpers';
 
 describe('helpers', () => {
   describe('sleep', () => {
@@ -36,6 +36,33 @@ describe('helpers', () => {
     it('truncates string and adds ellipsis if too long', () => {
       const result = truncateString('hello world', 5);
       expect(result).toBe('hello...');
+    });
+  });
+
+  describe('isValidEmail', () => {
+    it('returns true for valid email', () => {
+      expect(isValidEmail('test@example.com')).toBe(true);
+      expect(isValidEmail('user.name@domain.co.jp')).toBe(true);
+    });
+
+    it('returns false for invalid email', () => {
+      expect(isValidEmail('')).toBe(false);
+      expect(isValidEmail('invalid')).toBe(false);
+      expect(isValidEmail('@example.com')).toBe(false);
+      expect(isValidEmail('test@')).toBe(false);
+    });
+  });
+
+  describe('validatePassword', () => {
+    it('returns valid for password with 6+ characters', () => {
+      const result = validatePassword('123456');
+      expect(result.valid).toBe(true);
+    });
+
+    it('returns invalid for password with less than 6 characters', () => {
+      const result = validatePassword('12345');
+      expect(result.valid).toBe(false);
+      expect(result.message).toBe('密码长度至少为 6 位');
     });
   });
 });

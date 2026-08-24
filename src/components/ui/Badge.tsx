@@ -7,9 +7,10 @@ import { borderRadius } from '@/design-system/spacing';
 interface BadgeProps {
   label: string;
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'default';
+  size?: 'sm' | 'md';
 }
 
-export default function Badge({ label, variant = 'default' }: BadgeProps) {
+export default function Badge({ label, variant = 'default', size = 'md' }: BadgeProps) {
   const theme = useTheme();
 
   const variantMap = {
@@ -27,13 +28,13 @@ export default function Badge({ label, variant = 'default' }: BadgeProps) {
     <View
       style={{
         backgroundColor: bg,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+        paddingHorizontal: size === 'sm' ? 6 : 10,
+        paddingVertical: size === 'sm' ? 2 : 4,
         borderRadius: borderRadius.full,
         alignSelf: 'flex-start',
       }}
     >
-      <ThemedText variant="caption" style={{ color: text, fontWeight: '600' }}>
+      <ThemedText variant={size === 'sm' ? 'caption' : 'caption'} style={{ color: text, fontWeight: '600', fontSize: size === 'sm' ? 10 : 12 }}>
         {label}
       </ThemedText>
     </View>
