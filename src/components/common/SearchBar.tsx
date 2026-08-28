@@ -72,15 +72,13 @@ export default function SearchBar({
           pointerEvents={editable ? 'auto' : 'none'}
           returnKeyType="search"
         />
-        {keyword.length > 0 && editable && (
-          <Pressable onPress={() => setKeyword('')}>
+        {keyword.length > 0 && editable ? <Pressable onPress={() => setKeyword('')}>
             <MaterialCommunityIcons
               name="close-circle"
               size={18}
               color={theme.colors.onSurfaceVariant}
             />
-          </Pressable>
-        )}
+          </Pressable> : null}
       </View>
     </Pressable>
   );

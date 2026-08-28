@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { useTheme } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTheme } from 'react-native-paper';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
 } from 'react-native-reanimated';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import HomeScreen from '@/screens/HomeScreen';
 import CategoryScreen from '@/screens/CategoryScreen';

@@ -55,11 +55,9 @@ function FlashSaleItem({ product }: { product: Product }) {
           <ThemedText variant="body" weight="700" color="error">
             ¥{product.flashSalePrice || product.price}
           </ThemedText>
-          {product.originalPrice && (
-            <ThemedText variant="caption" color="muted" style={styles.originalPrice}>
+          {product.originalPrice ? <ThemedText variant="caption" color="muted" style={styles.originalPrice}>
               ¥{product.originalPrice}
-            </ThemedText>
-          )}
+            </ThemedText> : null}
         </View>
         {discount > 0 && (
           <View

@@ -13,8 +13,8 @@ import ProductCard from '@/components/common/ProductCard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import ThemedText from '@/components/ui/ThemedText';
-import { Category, Product } from '#/models';
-import { spacing, borderRadius } from '@/design-system/spacing';
+import { Category } from '#/models';
+import { spacing } from '@/design-system/spacing';
 
 function CategoryItem({
   category,
@@ -95,14 +95,6 @@ export default function CategoryScreen() {
   const isError = categoriesError || productsError;
   const error = categoriesErr || productsErr;
 
-  if (isLoading && !categories && !products) {
-    return <LoadingSpinner />;
-  }
-
-  if (isError) {
-    return <ErrorMessage message={error?.message || '加载失败'} onRetry={handleRetry} />;
-  }
-
   const renderCategory: ListRenderItem<Category> = useCallback(
     ({ item }) => (
       <CategoryItem
@@ -115,6 +107,14 @@ export default function CategoryScreen() {
   );
 
   const keyExtractor = useCallback((item: Category) => item.id.toString(), []);
+
+  if (isLoading && !categories && !products) {
+    return <LoadingSpinner />;
+  }
+
+  if (isError) {
+    return <ErrorMessage message={error?.message || '加载失败'} onRetry={handleRetry} />;
+  }
 
   return (
     <SafeAreaView
@@ -130,14 +130,12 @@ export default function CategoryScreen() {
             { backgroundColor: theme.colors.surfaceVariant },
           ]}
         >
-          {categories && (
-            <FlatList
+          {categories ? <FlatList
               data={categories}
               renderItem={renderCategory}
               keyExtractor={keyExtractor}
               showsVerticalScrollIndicator={false}
-            />
-          )}
+            /> : null}
         </View>
 
         {/* 右侧商品列表 */}

@@ -12,56 +12,6 @@ import { RootStackParamList } from '@/navigation/AppNavigator';
 import { isValidEmail } from '@/utils/helpers';
 import { spacing, borderRadius } from '@/design-system/spacing';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  backButton: {
-    padding: spacing.lg,
-  },
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing['2xl'],
-    gap: spacing.md,
-  },
-  title: {
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    marginBottom: spacing['2xl'],
-  },
-  errorBox: {
-    padding: spacing.md,
-    borderRadius: borderRadius.lg,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.xl,
-    gap: spacing.sm,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    padding: 0,
-  },
-  loginButton: {
-    paddingVertical: spacing.md,
-    borderRadius: borderRadius.xl,
-    alignItems: 'center',
-    marginTop: spacing.md,
-  },
-  registerRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: spacing.xs,
-    marginTop: spacing.lg,
-  },
-});
-
 export default function LoginScreen() {
   const theme = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -205,3 +155,52 @@ export default function LoginScreen() {
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backButton: {
+    padding: spacing.lg,
+  },
+  content: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing['2xl'],
+    gap: spacing.md,
+  },
+  title: {
+    marginBottom: spacing.xs,
+  },
+  subtitle: {
+    marginBottom: spacing['2xl'],
+  },
+  errorBox: {
+    padding: spacing.md,
+    borderRadius: borderRadius.lg,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.xl,
+    gap: spacing.sm,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    padding: 0,
+  },
+  loginButton: {
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.xl,
+    alignItems: 'center',
+    marginTop: spacing.md,
+  },
+  registerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginTop: spacing.lg,
+  },
+});

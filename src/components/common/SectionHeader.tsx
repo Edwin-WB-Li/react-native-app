@@ -27,8 +27,7 @@ export default function SectionHeader({ title, subtitle, onPress }: SectionHeade
           </ThemedText>
         ) : null}
       </View>
-      {onPress && (
-        <View style={styles.right}>
+      {onPress ? <View style={styles.right}>
           <ThemedText variant="caption" color="primary">
             更多
           </ThemedText>
@@ -37,8 +36,7 @@ export default function SectionHeader({ title, subtitle, onPress }: SectionHeade
             size={16}
             color={theme.colors.primary}
           />
-        </View>
-      )}
+        </View> : null}
     </Pressable>
   );
 }

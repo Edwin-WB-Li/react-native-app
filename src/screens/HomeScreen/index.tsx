@@ -104,28 +104,22 @@ export default function HomeScreen() {
         <SearchBar editable={false} />
 
         {/* 轮播图 */}
-        {banners && banners.length > 0 && <BannerCarousel banners={banners} />}
+        {banners && banners.length > 0 ? <BannerCarousel banners={banners} /> : null}
 
         {/* 分类入口 */}
-        {categories && categories.length > 0 && (
-          <CategoryGrid categories={categories} />
-        )}
+        {categories && categories.length > 0 ? <CategoryGrid categories={categories} /> : null}
 
         {/* 秒杀专区 */}
-        {flashSaleProducts && flashSaleProducts.length > 0 && (
-          <FlashSaleSection products={flashSaleProducts} />
-        )}
+        {flashSaleProducts && flashSaleProducts.length > 0 ? <FlashSaleSection products={flashSaleProducts} /> : null}
 
         {/* 推荐商品 */}
-        {recommendedProducts && recommendedProducts.length > 0 && (
-          <View style={styles.section}>
+        {recommendedProducts && recommendedProducts.length > 0 ? <View style={styles.section}>
             <SectionHeader
               title="为你推荐"
               subtitle="精选好物，品质生活"
             />
             <ProductGrid products={recommendedProducts} />
-          </View>
-        )}
+          </View> : null}
 
         <View style={styles.bottomPadding} />
       </ScrollView>

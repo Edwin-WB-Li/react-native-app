@@ -26,7 +26,8 @@ export default function ProductDetailScreen() {
   const { productId } = route.params as { productId: number };
 
   const { data: product, isLoading, isError, error, refetch } = useProduct(productId);
-  const { addItem } = useCartStore();
+  const { addItem, getTotalCount } = useCartStore();
+  const cartTotalCount = getTotalCount();
   const { isAuthenticated } = useAuthStore();
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -85,19 +86,15 @@ export default function ProductDetailScreen() {
             <ThemedText variant="headline" weight="700" color="error">
               ¥{displayPrice}
             </ThemedText>
-            {product.originalPrice && product.originalPrice > displayPrice && (
-              <ThemedText variant="body" color="muted" style={styles.originalPrice}>
+            {product.originalPrice && product.originalPrice > displayPrice ? <ThemedText variant="body" color="muted" style={styles.originalPrice}>
                 ¥{product.originalPrice}
-              </ThemedText>
-            )}
+              </ThemedText> : null}
           </View>
-          {product.tags && product.tags.length > 0 && (
-            <View style={styles.tagsRow}>
+          {product.tags && product.tags.length > 0 ? <View style={styles.tagsRow}>
               {product.tags.map((tag: string) => (
                 <Badge key={tag} label={tag} variant="primary" size="sm" />
               ))}
-            </View>
-          )}
+            </View> : null}
         </View>
 
         {/* 商品信息 */}
@@ -127,7 +124,16 @@ export default function ProductDetailScreen() {
       {/* 底部操作栏 */}
       <View style={[styles.footer, { backgroundColor: theme.colors.surface }]}>
         <Pressable style={styles.iconButton} onPress={() => navigation.navigate('MainTabs', { screen: 'Cart' } as never)}>
-          <MaterialCommunityIcons name="cart-outline" size={24} color={theme.colors.onSurface} />
+          <View style={styles.cartIconWrapper}>
+            <MaterialCommunityIcons name="cart-outline" size={24} color={theme.colors.onSurface} />
+            {cartTotalCount > 0 && (
+              <View style={styles.cartBadge}>
+                <ThemedText variant="caption" style={styles.cartBadgeText}>
+                  {cartTotalCount > 99 ? '99+' : cartTotalCount}
+                </ThemedText>
+              </View>
+            )}
+          </View>
           <ThemedText variant="caption">购物车</ThemedText>
         </Pressable>
         <Pressable
@@ -222,6 +228,27 @@ const styles = StyleSheet.create({
   iconButton: {
     alignItems: 'center',
     paddingHorizontal: spacing.md,
+  },
+  cartIconWrapper: {
+    position: 'relative',
+  },
+  cartBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -10,
+    backgroundColor: '#EF4444',
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 3,
+  },
+  cartBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
+    lineHeight: 14,
   },
   actionButton: {
     flex: 1,

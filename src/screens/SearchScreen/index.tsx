@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useHotKeywords, useSearchSuggestions, useSearchProducts } from '@/services/queries/useSearch';
 import { useSearchHistoryStore } from '@/stores/useSearchHistoryStore';
@@ -12,13 +11,38 @@ import SearchBar from '@/components/common/SearchBar';
 import ProductCard from '@/components/common/ProductCard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ThemedText from '@/components/ui/ThemedText';
-import { RootStackParamList } from '@/navigation/AppNavigator';
 import { spacing, borderRadius } from '@/design-system/spacing';
 import { Product } from '#/models';
 
+function SearchHeader({
+  onSubmit,
+  placeholder,
+}: {
+  onSubmit: (keyword: string) => void;
+  placeholder?: string;
+}) {
+  const theme = useTheme();
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.headerRow}>
+      <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={24}
+          color={theme.colors.onSurface}
+        />
+      </Pressable>
+      <View style={styles.searchBarWrapper}>
+        <SearchBar placeholder={placeholder} onSubmit={onSubmit} />
+      </View>
+    </View>
+  );
+}
+
 export default function SearchScreen() {
   const theme = useTheme();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [keyword, setKeyword] = useState('');
   const [submittedKeyword, setSubmittedKeyword] = useState('');
 
@@ -72,10 +96,7 @@ export default function SearchScreen() {
         style={[styles.container, { backgroundColor: theme.colors.background }]}
         edges={['top']}
       >
-        <SearchBar
-          placeholder="搜索商品"
-          onSubmit={handleSearch}
-        />
+        <SearchHeader onSubmit={handleSearch} />
         {isLoading ? (
           <LoadingSpinner />
         ) : searchResults && searchResults.length > 0 ? (
@@ -106,7 +127,7 @@ export default function SearchScreen() {
         style={[styles.container, { backgroundColor: theme.colors.background }]}
         edges={['top']}
       >
-        <SearchBar placeholder="搜索商品" onSubmit={handleSearch} />
+        <SearchHeader onSubmit={handleSearch} />
         <View style={styles.suggestionsList}>
           {suggestions.map((s: string) => (
             <Pressable
@@ -136,7 +157,7 @@ export default function SearchScreen() {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
       edges={['top']}
     >
-      <SearchBar placeholder="搜索商品" onSubmit={handleSearch} />
+      <SearchHeader onSubmit={handleSearch} />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* 搜索历史 */}
         {historyItems.length > 0 && (
@@ -181,8 +202,7 @@ export default function SearchScreen() {
         )}
 
         {/* 热门搜索 */}
-        {hotKeywords && hotKeywords.length > 0 && (
-          <View style={styles.section}>
+        {hotKeywords && hotKeywords.length > 0 ? <View style={styles.section}>
             <ThemedText variant="title" weight="600" style={styles.sectionTitle}>
               热门搜索
             </ThemedText>
@@ -206,8 +226,7 @@ export default function SearchScreen() {
                 </Pressable>
               ))}
             </View>
-          </View>
-        )}
+          </View> : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -217,6 +236,19 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: spacing.sm,
+    paddingRight: spacing.lg,
+    gap: spacing.xs,
+  },
+  backButton: {
+    padding: spacing.sm,
+  },
+  searchBarWrapper: {
     flex: 1,
   },
   section: {

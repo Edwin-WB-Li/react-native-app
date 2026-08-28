@@ -66,23 +66,19 @@ function ProductCard({
           {name}
         </ThemedText>
 
-        {tags && tags.length > 0 && (
-          <View style={styles.tagsRow}>
+        {tags && tags.length > 0 ? <View style={styles.tagsRow}>
             {tags.map(tag => (
               <Badge key={tag} label={tag} variant="primary" size="sm" />
             ))}
-          </View>
-        )}
+          </View> : null}
 
         <View style={styles.priceRow}>
           <ThemedText variant="body" weight="700" color="error">
             ¥{displayPrice}
           </ThemedText>
-          {originalPrice && originalPrice > displayPrice && (
-            <ThemedText variant="caption" color="muted" style={styles.originalPrice}>
+          {originalPrice && originalPrice > displayPrice ? <ThemedText variant="caption" color="muted" style={styles.originalPrice}>
               ¥{originalPrice}
-            </ThemedText>
-          )}
+            </ThemedText> : null}
         </View>
 
         <View style={styles.metaRow}>
