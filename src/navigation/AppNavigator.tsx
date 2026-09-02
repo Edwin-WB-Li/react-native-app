@@ -22,6 +22,7 @@ import LoginScreen from '@/screens/LoginScreen';
 import RegisterScreen from '@/screens/RegisterScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
 import { useCartStore } from '@/stores/useCartStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export type RootStackParamList = {
   MainTabs: undefined;
@@ -115,12 +116,12 @@ function CartTabIcon({
   color: string;
 }) {
   const totalCount = useCartStore(state => state.getTotalCount());
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <View style={{ alignItems: 'center', justifyContent: 'center', height: 28 }}>
       <AnimatedTabIcon routeName={routeName} focused={focused} color={color} />
-      {totalCount > 0 && (
-        <View
+      {isAuthenticated && totalCount > 0 ? <View
           style={{
             position: 'absolute',
             top: -4,
@@ -150,14 +151,14 @@ function CartTabIcon({
               </Text>
             )}
           </React.Fragment>
-        </View>
-      )}
+        </View> : null}
     </View>
   );
 }
 
 function MainTabNavigator() {
   const theme = useTheme();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <Tab.Navigator
@@ -203,6 +204,14 @@ function MainTabNavigator() {
         name="Cart"
         component={CartScreen}
         options={{ title: '购物车' }}
+        listeners={({ navigation }) => ({
+          tabPress: e => {
+            if (!isAuthenticated) {
+              e.preventDefault();
+              navigation.navigate('Login');
+            }
+          },
+        })}
       />
       <Tab.Screen
         name="Profile"

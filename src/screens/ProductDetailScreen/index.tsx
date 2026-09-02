@@ -33,10 +33,14 @@ export default function ProductDetailScreen() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   const handleAddToCart = useCallback(() => {
+    if (!isAuthenticated) {
+      navigation.navigate('Login');
+      return;
+    }
     if (!product) return;
     addItem(product.id, 1);
     setSnackbarVisible(true);
-  }, [product, addItem]);
+  }, [isAuthenticated, product, addItem, navigation]);
 
   const handleBuyNow = useCallback(() => {
     if (!isAuthenticated) {
@@ -126,13 +130,11 @@ export default function ProductDetailScreen() {
         <Pressable style={styles.iconButton} onPress={() => navigation.navigate('MainTabs', { screen: 'Cart' } as never)}>
           <View style={styles.cartIconWrapper}>
             <MaterialCommunityIcons name="cart-outline" size={24} color={theme.colors.onSurface} />
-            {cartTotalCount > 0 && (
-              <View style={styles.cartBadge}>
+            {isAuthenticated && cartTotalCount > 0 ? <View style={styles.cartBadge}>
                 <ThemedText variant="caption" style={styles.cartBadgeText}>
                   {cartTotalCount > 99 ? '99+' : cartTotalCount}
                 </ThemedText>
-              </View>
-            )}
+              </View> : null}
           </View>
           <ThemedText variant="caption">购物车</ThemedText>
         </Pressable>
@@ -141,7 +143,7 @@ export default function ProductDetailScreen() {
           onPress={handleAddToCart}
         >
           <ThemedText variant="body" weight="600" color="primary">
-            加入购物车
+            {isAuthenticated ? '加入购物车' : '登录后加入'}
           </ThemedText>
         </Pressable>
         <Pressable

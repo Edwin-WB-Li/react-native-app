@@ -22,7 +22,11 @@ interface FlashSaleSectionProps {
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-function FlashSaleItem({ product }: { product: Product }) {
+interface FlashSaleItemProps {
+  product: Product;
+}
+
+function FlashSaleItem({ product }: FlashSaleItemProps) {
   const theme = useTheme();
   const navigation = useNavigation<NavigationProp>();
 

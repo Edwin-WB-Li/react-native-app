@@ -4,22 +4,24 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useCartStore } from '@/stores/useCartStore';
 import { useProducts } from '@/services/queries/useProducts';
 import { useAuthStore } from '@/stores/useAuthStore';
 import ThemedText from '@/components/ui/ThemedText';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { RootStackParamList } from '@/navigation/AppNavigator';
 import { spacing, borderRadius } from '@/design-system/spacing';
 import { CartItem } from '#/models';
 
-function CartItemRow({
-  item,
-  product,
-}: {
+interface CartItemRowProps {
   item: CartItem;
   product?: { name: string; price: number; image: string };
-}) {
+}
+
+function CartItemRow({ item, product }: CartItemRowProps) {
   const theme = useTheme();
   const { toggleSelect, updateQuantity, removeItem } = useCartStore();
 
@@ -88,6 +90,7 @@ function CartItemRow({
 
 export default function CartScreen() {
   const theme = useTheme();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { items, toggleSelectAll, isAllSelected, getSelectedCount, clearCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { data: products, isLoading } = useProducts();
@@ -116,6 +119,37 @@ export default function CartScreen() {
 
   if (isLoading) {
     return <LoadingSpinner />;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        edges={['top']}
+      >
+        <View style={styles.emptyContainer}>
+          <MaterialCommunityIcons
+            name="lock-outline"
+            size={64}
+            color={theme.colors.onSurfaceVariant}
+          />
+          <ThemedText variant="title" color="muted" style={styles.emptyText}>
+            请先登录
+          </ThemedText>
+          <ThemedText variant="bodySmall" color="muted">
+            登录后才能查看购物车
+          </ThemedText>
+          <Pressable
+            style={[styles.loginButton, { backgroundColor: theme.colors.primary }]}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <ThemedText variant="body" weight="600" style={{ color: '#fff' }}>
+              去登录
+            </ThemedText>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (items.length === 0) {
@@ -292,6 +326,12 @@ const styles = StyleSheet.create({
   },
   checkoutButton: {
     paddingHorizontal: spacing['2xl'],
+    paddingVertical: spacing.md,
+    borderRadius: borderRadius.xl,
+  },
+  loginButton: {
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing['3xl'],
     paddingVertical: spacing.md,
     borderRadius: borderRadius.xl,
   },

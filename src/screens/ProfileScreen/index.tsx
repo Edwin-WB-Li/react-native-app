@@ -17,7 +17,13 @@ const HEADER_HEIGHT = 180;
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
-function StatItem({ value, label, icon }: { value: string; label: string; icon: IconName }) {
+interface StatItemProps {
+  value: string;
+  label: string;
+  icon: IconName;
+}
+
+function StatItem({ value, label, icon }: StatItemProps) {
   const theme = useTheme();
 
   return (

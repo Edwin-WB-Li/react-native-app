@@ -78,7 +78,12 @@ function SettingRow({
   return content;
 }
 
-function SettingsCard({ title, children }: { title: string; children: React.ReactNode }) {
+interface SettingsCardProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+function SettingsCard({ title, children }: SettingsCardProps) {
   const theme = useTheme();
 
   return (
